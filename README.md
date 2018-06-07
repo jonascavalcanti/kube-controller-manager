@@ -1,55 +1,5 @@
 # Controller Manager v1.9.8
-
-# Enviroment Defaults
-
-```
-ENV APISERVER_IP="127.0.0.1"
-ENV KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16"
-ENV CLUSTER_NAME="cluster.local"
-ENV CONTEXT_NAME="default"
-ENV USER="admin"
-ENV PATH_BASE_KUBERNETES="/opt/kubernetes/control-manager"
-ENV DIR_CERTS="${PATH_BASE_KUBERNETES}/certificates"
-ENV KUBECONFIG="${DIR_CERTS}/kube-control-manager"
-ENV TOKEN="fQAv5WoZEDyu6YKP5e3AH33p7qYKN92K"
-ENV ADMIN_KEY_PEM="admin-key.pem"
-ENV CA_CERT_PEM="ca.pem"
-ENV CA_CERT_PEM_KEY="ca-key.pem"
-ENV API_CERT_CRT="apiserver.crt"
-ENV API_KEY="apiserver.key"
-ENV API_CERT_PEM="apiserver.pem"
-ENV API_KEY_PEM="apiserver-key.pem"
-ENV API_CERT_CSR="apiserver.csr"
-
-```
-
-# Docker command
-
-```
-docker run -d 
-        --name <container_name> --privileged 
-        -p 10250:10250  
-        -e APISERVER_IP=<ip_apiserver> 
-        -e KUBERNETES_CLUSTER_RANGE_IP=<network/mask> 
-        -e CLUSTER_NAME=<name.cluster> 
-        -e USER=<user_admin> 
-        -e PATH_BASE_KUBERNETES=<path_files_kube_apiserver> 
-        -e DIR_CERTS=<path_all_certificates> 
-        -e KUBECONFIG="<kubconfig_path>"
-        -e ADMIN_CERT_PEM=<cert_user_admin.pem> 
-        -e ADMIN_KEY_PEM=<user_admin-key.pem> 
-        -e CA_CERT_PEM=<ca_cert_PEM.pem> 
-        -e CA_CERT_PEM_KEY=<ca-key.pem>  
-        -e API_CERT_CRT=<apiserver.crt> 
-        -e API_KEY=<apiserver.key> 
-        -e API_CERT_PEM=<apiserver.pem> 
-        -e API_KEY_PEM=<apiserver-key.pem> 
-        -e TOKEN=<token_generate_api>
-        -v <path_local_storage_with_certificates_api>:${DIR_CERTS} <image>:<tag>
-```
 # Kubernetes
-
-[![Submit Queue Widget]][Submit Queue] [![GoDoc Widget]][GoDoc] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/569/badge)](https://bestpractices.coreinfrastructure.org/projects/569)
 
 <img src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png" width="100">
 
@@ -72,46 +22,51 @@ read the CNCF [announcement].
 
 ----
 
-## To start using Kubernetes
-
-See our documentation on [kubernetes.io].
-
-Try our [interactive tutorial].
-
-Take a free course on [Scalable Microservices with Kubernetes].
-
-## To start developing Kubernetes
-
-The [community repository] hosts all information about
-building Kubernetes from source, how to contribute code
-and documentation, who to contact about what, etc.
-
-If you want to build Kubernetes right away there are two options:
-
-##### You have a working [Go environment].
+# Environment Variables Defaults
 
 ```
-$ go get -d k8s.io/kubernetes
-$ cd $GOPATH/src/k8s.io/kubernetes
-$ make
+KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16"
+CLUSTER_NAME="cluster.local"
+PATH_BASE_KUBERNETES="/opt/kubernetes"
+DIR_CERTS="${PATH_BASE_KUBERNETES}/certificates"
+CONTROLLER_MANAGER_CERTS="${DIR_CERTS}/kube-controller-manager"
+CONTROLLER_MANAGER_PEM="kube-controller-manager.pem"
+CONTROLLER_MANAGER_KEY_PEM="kube-controller-manager-key.pem"
+CA_CERT_PEM="ca.pem"
+CA_CERT_PEM_KEY="ca-key.pem"
+API_KEY_PEM="apiserver-key.pem"
+
 ```
 
-##### You have a working [Docker environment].
+# How to use this image
+
+Start with docker command
 
 ```
-$ git clone https://github.com/kubernetes/kubernetes
-$ cd kubernetes
-$ make quick-release
+docker run -d 
+        --name <container_name> \
+        --privileged \
+        -p 10252:10252 \  
+        -e KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16"
+        -e CLUSTER_NAME="cluster.local"
+        -e PATH_BASE_KUBERNETES="/opt/kubernetes/kube-controller-manager"
+        -e DIR_CERTS="${PATH_BASE_KUBERNETES}/certificates"
+        -e CONTROLLER_MANAGER_CERTS="${DIR_CERTS}/kube-controller-manager"
+        -e CONTROLLER_MANAGER_PEM="kube-controller-manager.pem"
+        -e CONTROLLER_MANAGER_KEY_PEM="kube-controller-manager-key.pem"
+        -e CA_CERT_PEM="ca.pem"
+        -e CA_CERT_PEM_KEY="ca-key.pem"
+        -e API_KEY_PEM="apiserver-key.pem"
+        -v <path_local_storage_with_certificates_api>:${DIR_CERTS} <image>:<tag>
 ```
 
-For the full story, head over to the [developer's documentation].
+# Docker example
 
-## Support
-
-If you need support, start with the [troubleshooting guide],
-and work your way through the process that we've outlined.
-
-That said, if you have questions, reach out to us
-[one way or another][communication].
-
-[announcement]: https://cncf.io/news/announcement/2015/07/new-cloud-native-computing-foundation-drive-alignment-among-container
+```
+docker run -d \
+    --name kube-controller-manager \
+    --privileged \
+    -p 10252:10252  \
+    -v /opt/kubernetes/certificates/services:/opt/kubernetes/certificates \
+    kube-controller-manager:latest
+```
