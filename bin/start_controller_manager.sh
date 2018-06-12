@@ -7,8 +7,8 @@
 --cluster-cidr=${KUBERNETES_CLUSTER_RANGE_IP} \
 --cluster-name=${CLUSTER_NAME} \
 --leader-elect=true \
---root-ca-file=${DIR_CERTS}/${CA_CERT_PEM} \
---service-account-private-key-file=${DIR_CERTS}/${API_KEY_PEM} \
+--root-ca-file=${DIR_CERTS_API}/${CA_CERT_PEM} \
+--service-account-private-key-file=${DIR_CERTS_API}/${API_KEY_PEM} \
 --use-service-account-credentials=true \
 --kubeconfig=${CONTROLLER_MANAGER_CERTS}/kubeconfig \
 --cluster-signing-cert-file=${CONTROLLER_MANAGER_CERTS}/${CONTROLLER_MANAGER_PEM} \

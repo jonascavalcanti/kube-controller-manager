@@ -28,7 +28,8 @@ read the CNCF [announcement].
 KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16"
 CLUSTER_NAME="cluster.local"
 PATH_BASE_KUBERNETES="/opt/kubernetes"
-DIR_CERTS="${PATH_BASE_KUBERNETES}/certificates"
+DIR_CERTS="${PATH_BASE_KUBERNETES}/certs"
+DIR_CERTS_API="${PATH_BASE_KUBERNETES}/certs/api"
 CONTROLLER_MANAGER_CERTS="${DIR_CERTS}/kube-controller-manager"
 CONTROLLER_MANAGER_PEM="kube-controller-manager.pem"
 CONTROLLER_MANAGER_KEY_PEM="kube-controller-manager-key.pem"
@@ -47,26 +48,22 @@ docker run -d
         --name <container_name> \
         --privileged \
         -p 10252:10252 \  
-        -e KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16"
-        -e CLUSTER_NAME="cluster.local"
-        -e PATH_BASE_KUBERNETES="/opt/kubernetes/kube-controller-manager"
-        -e DIR_CERTS="${PATH_BASE_KUBERNETES}/certificates"
-        -e CONTROLLER_MANAGER_CERTS="${DIR_CERTS}/kube-controller-manager"
-        -e CONTROLLER_MANAGER_PEM="kube-controller-manager.pem"
-        -e CONTROLLER_MANAGER_KEY_PEM="kube-controller-manager-key.pem"
-        -e CA_CERT_PEM="ca.pem"
-        -e CA_CERT_PEM_KEY="ca-key.pem"
-        -e API_KEY_PEM="apiserver-key.pem"
-        -v <path_local_storage_with_certificates_api>:${DIR_CERTS} <image>:<tag>
+        -e KUBERNETES_CLUSTER_RANGE_IP="10.254.0.0/16" \
+        -e CLUSTER_NAME="cluster.local" \
+        -e PATH_BASE_KUBERNETES="/opt/kubernetes/kube-controller-manager" \
+        -e DIR_CERTS="${PATH_BASE_KUBERNETES}/certs" \
+        -e CONTROLLER_MANAGER_CERTS="${DIR_CERTS}/kube-controller-manager" \
+        -e CONTROLLER_MANAGER_PEM="kube-controller-manager.pem" \
+        -e CONTROLLER_MANAGER_KEY_PEM="kube-controller-manager-key.pem" \
+        -e CA_CERT_PEM="ca.pem" \
+        -e CA_CERT_PEM_KEY="ca-key.pem" \
+        -e API_KEY_PEM="apiserver-key.pem" \
+        -v <path_local_storage_with_certificates>:${DIR_CERTS} <image>:<tag>
 ```
 
 # Docker example
 
 ```
-docker run -d \
-    --name kube-controller-manager \
-    --privileged \
-    -p 10252:10252  \
-    -v /opt/kubernetes/certificates/services:/opt/kubernetes/certificates \
-    kube-controller-manager:latest
+docker run -d --name kube-controller-manager -h kube-controller-manager --privileged=true -p 10252:10252 -e CLUSTER_NAME="cluster.local" -v /opt/kubernetes/certs:/opt/kubernetes/certs kube-controller-manager
+
 ```
